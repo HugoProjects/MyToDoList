@@ -1,0 +1,237 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+input, button {
+  font-family: inherit;
+}
+
+html {
+  font-family: sans-serif, Arial, Helvetica;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  background-color: aliceblue;
+}
+
+main {
+  min-width: 35%;
+  max-width: 65%;
+  /*width: clamp(35%, 50%, 65%);*/
+  margin: 2rem auto;
+  text-align: center;
+  flex-grow: 1;
+}
+
+#footer {
+  text-align: center;
+  font-style: italic;
+  color: grey;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+#title {
+  margin: 2rem auto;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+#taskForm {
+  margin: 4rem auto;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  position: relative;
+}
+
+#taskInput {
+  padding: 0.75rem;
+  border: 1px grey solid;
+  border-radius: 5px;
+  font-size: 1rem;
+  min-width: 40%;
+  field-sizing: content; /*Só funciona em alguns browsers, o elemento estica à medida que se escreve*/
+}
+
+#addTaskButton{
+  padding: 0.75rem 1rem;
+  border: 1px grey solid;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  /*min-width: 20%;*/
+}
+
+#confirmClearTasksDialog{
+  margin: auto;
+  padding: 1rem;
+  background-color: aliceblue;
+  border: 3px solid red;
+  border-radius: 10px;
+  font-size: 1.5rem;
+}
+
+/* Se quisesse customizar os efeitos de fundo do dialog (por default ele escurece o showModal à volta do Dialog)
+#confirmClearTasksDialog::backdrop{
+  background-color: transparent;
+  backdrop-filter: blur(3px);
+}*/
+
+#dialogForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dialogBtn {
+  padding: 0.5rem;
+  width: 4rem;
+  font-size: 1rem;
+  margin: 0 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.clearBtn {
+  width: 6rem;
+  padding: 0.5rem;
+  background-color: transparent;
+  border: 1px solid black;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 5px;
+}
+
+.clearBtn:hover {
+  background-color: black;
+  color: white;
+}
+
+.taskLabel {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.taskCheckBtn {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+.taskText {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+  padding: 0 1rem;
+  min-width: 0;
+  text-align: left;
+  font-size: 1.5rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.taskDeleteBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
+.taskDeleteBtn:hover {
+  transform: scale(1.25);
+  color: red;
+}
+
+.taskCheckBtn:checked + .taskText {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+#listHeader {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid black;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: rgb(255, 220, 151);
+}
+
+#list {
+  width: 100%;
+  margin: 0 auto;
+}
+
+#listTitle {
+  font-size: 1.5rem;
+}
+
+ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+ul>li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid black;
+  background-color: rgb(248, 192, 80);
+}
+
+/*
+ul>li:active{
+  transform: scale(0.75);
+}*/
+
+ul>li:last-child {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+ul>li:last-child {
+  border-bottom: transparent;
+}
+
+#footer>a, #footer>a:visited {
+  cursor: pointer;
+  color: grey;
+}
+
+#footer>a:hover{
+  opacity: 75%;
+}
+
+#footer>a:active{
+  opacity: 100%;
+}
+
+@media screen and (width < 480px) {
+  
+  #taskForm {
+    flex-direction: column;
+  }
+
+  .taskText {
+    font-size: 1.25rem;
+  }
+
+}

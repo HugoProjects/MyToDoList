@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To Do List</title>
+  <link rel="stylesheet" href="src/styles/styles.css">
+  <link rel="icon" type="image/png" href="src/favicon.png">
+  <script type="module" src="scripts/bundle.js" defer></script>
+</head>
+<body>
+  <main>
+    <h1 id="title">My To Do List 📋</h1>
+    <section id="newTask">
+      <form id="taskForm">
+        <input id="taskInput" required type="text" placeholder="Something I need to do...">
+        <button id="addTaskButton" type="submit">Add</button>
+      </form>
+    </section>
+
+    <dialog id="confirmClearTasksDialog">
+      <form method="dialog" id="dialogForm">
+        <p class="dialogText">Sure you want to delete all tasks?</p>
+        <div class="dialogBtns">
+          <button id="yesBtn" class="dialogBtn" type="submit" value="Yes">Yes</button>
+          <button id="noBtn" class="dialogBtn" type="submit" value="No">No</button>
+        </div>
+      </form>
+    </dialog>
+
+    <section id="toDoList">
+      <header id="listHeader">
+        <span id="listTitle">List</span>
+        <button id="clearAllTasksBtn" class="clearBtn" title="Clear All">Clear All</button>
+      </header>
+      <ul id="list">
+        <!--Add tasks with script-->
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <p id="footer">Project made by <a href="https://github.com/HugoProjects" title="Hugo B. Github" target="_blank">Hugo B.</a></p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Pasta de dependências do Node.js
+node_modules/
+
+# Arquivos compilados, caso não queiras dar commit às mudanças dos mesmos várias vezes (sempre que sao gerados a partir de src)
+# Caso seja para finalizar o projeto e colocar o site online, estes diretorios têm de estar presentes portanto, eliminar (comentar) do .gitignore
+#scripts/
+#build/
+
+# Arquivos temporários de sistemas operacionais
+.DS_Store
+Thumbs.db
+
+# Arquivos de log
+npm-debug.log
+yarn-error.log
+
+# IDEs específicas, como o VSCode, se estiver a usar
+.vscode/
+
+# Arquivos de pacotes do NPM (não necessários no repositório)
+# package-lock.json
