@@ -61,9 +61,34 @@ export class TaskManager {
     //localStorage.removeItem("taskList");
   }
 
+  public clearCompletedTasks(): void {
+    this.taskList = this.taskList.filter((task)=> {
+      return task.complete !== true;
+    });
+    this.saveTasks();
+  }
+
+  //Muda o estado para todas completas ou muda para todas incompletas
+  public checkAllTasks(checkState: boolean): void {
+
+    //Verificar se a checkbox esta selecionada ou nao (true ou false, passado como argumento no TaskUI)
+    if(checkState){
+      this.taskList.forEach((task) => {
+        return task.complete = true; //Coloca todas a true
+      });
+      //console.log("colocou todas a true");
+    }else{
+      this.taskList.forEach((task) => {
+        return task.complete = false; //Coloca todas a falso
+      });
+      //console.log("colocou todas a false");
+    }
+    this.saveTasks();
+  }
+
+  
+
+
+
 }
 
-
-// Checklist select All Tasks
-
-// Button Delete Completed Tasks

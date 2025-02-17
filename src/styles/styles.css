@@ -6,7 +6,7 @@
   box-sizing: border-box;
 }
 
-input, button {
+input, button, select {
   font-family: inherit;
 }
 
@@ -101,20 +101,66 @@ main {
   font-weight: 500;
 }
 
+.select-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  position: relative;
+  width: fit-content;
+}
+
+.select-container i {
+  padding: 0.4rem;
+  font-size: 1rem;
+  color: black;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.select-container select {
+  padding: 0.4rem 0.4rem 0.4rem 1.4rem;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  /*appearance: none; //Se quiser retirar a seta a indicar que é um dropdown*/
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+.select-container select:hover{
+  background-color: black;
+  color: white;
+}
+
+.select-container:hover i{
+  color: white;
+}*/
+
 .clearBtn {
-  width: 6rem;
-  padding: 0.5rem;
+  padding: 0.4rem;
   background-color: transparent;
   border: 1px solid black;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
   border-radius: 5px;
+  white-space: nowrap;
 }
 
 .clearBtn:hover {
   background-color: black;
   color: white;
+}
+
+.checkIcon{
+  padding: 0 0.2rem;
 }
 
 .taskLabel {
@@ -127,6 +173,10 @@ main {
   width: 1.5rem;
   height: 1.5rem;
   flex-shrink: 0;
+}
+
+#checkAllBtn{
+  cursor: pointer;
 }
 
 .taskText {
@@ -165,6 +215,7 @@ main {
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
+  gap: 0.5rem;
   align-items: center;
   padding: 1rem 0.5rem;
   border-bottom: 1px solid black;
@@ -180,6 +231,9 @@ main {
 
 #listTitle {
   font-size: 1.5rem;
+  flex-grow: 1;
+  text-align: left;
+  padding: 0 0.5rem;
 }
 
 ul {
@@ -226,6 +280,13 @@ ul>li:last-child {
 
 @media screen and (width < 480px) {
   
+  main {
+    min-width: 50%;
+    max-width: 75%;
+    /*width: clamp(35%, 50%, 65%);*/
+    margin: 1rem auto;
+  }
+
   #taskForm {
     flex-direction: column;
   }

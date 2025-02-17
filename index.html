@@ -6,6 +6,7 @@
   <title>To Do List</title>
   <link rel="stylesheet" href="src/styles/styles.css">
   <link rel="icon" type="image/png" href="src/favicon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script type="module" src="scripts/bundle.js" defer></script>
 </head>
 <body>
@@ -20,7 +21,7 @@
 
     <dialog id="confirmClearTasksDialog">
       <form method="dialog" id="dialogForm">
-        <p class="dialogText">Sure you want to delete all tasks?</p>
+        <p class="dialogText">Sure you want to delete all completed <i class="fa-solid fa-check"></i> tasks?</p>
         <div class="dialogBtns">
           <button id="yesBtn" class="dialogBtn" type="submit" value="Yes">Yes</button>
           <button id="noBtn" class="dialogBtn" type="submit" value="No">No</button>
@@ -30,8 +31,20 @@
 
     <section id="toDoList">
       <header id="listHeader">
+        <input type="checkbox" id="checkAllBtn" class="taskCheckBtn" title="Check All">
         <span id="listTitle">List</span>
-        <button id="clearAllTasksBtn" class="clearBtn" title="Clear All">Clear All</button>
+        <div class="select-container">
+          <label for="orderBySelect">
+            <i class="fa-solid fa-sort"></i>
+          </label>
+          <select id="orderBySelect">
+            <option value="Order by" disabled selected>Order by:</option>
+            <option value="Alphabetical">Alphabetical</option>
+            <option value="Newest">Newest</option>
+            <option value="Latest">Latest</option>
+          </select>
+        </div>
+        <button id="clearCompletedTasksBtn" class="clearBtn" title="Clear Completed">Clear <i class="fa-solid fa-check checkIcon"></i></button>
       </header>
       <ul id="list">
         <!--Add tasks with script-->

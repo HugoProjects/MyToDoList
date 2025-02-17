@@ -5,17 +5,19 @@ export class TaskUI {
   private taskManager: TaskManager;
   private taskForm: HTMLFormElement;
   private inputText: HTMLInputElement;
-  private clearAllTasksBtn: HTMLButtonElement;
+  private clearCompletedTasksBtn: HTMLButtonElement;
   private confirmClearTasksDialog: HTMLDialogElement;
   private taskList: HTMLUListElement;
+  private checkAllBtn: HTMLInputElement;
 
   constructor() {
     this.taskManager = new TaskManager();
     this.taskForm = document.getElementById("taskForm") as HTMLFormElement;
     this.inputText = document.getElementById("taskInput") as HTMLInputElement;
-    this.clearAllTasksBtn = document.getElementById("clearAllTasksBtn") as HTMLButtonElement;
+    this.clearCompletedTasksBtn = document.getElementById("clearCompletedTasksBtn") as HTMLButtonElement;
     this.confirmClearTasksDialog = document.getElementById("confirmClearTasksDialog") as HTMLDialogElement;
     this.taskList = document.getElementById("list") as HTMLUListElement;
+    this.checkAllBtn = document.getElementById("checkAllBtn") as HTMLInputElement;
 
     this.initialize(); //Ao chamar o new TaskUI() inicializamos a class TaskUI com todas as suas propriedades e o construtor, que por sua vez irá usar este metodo initialize() para iniciar a aplicação
   }
@@ -23,7 +25,8 @@ export class TaskUI {
   private initialize(){
 
     this.taskForm.addEventListener("submit", (event) => this.taskSubmit(event));
-    this.clearAllTasksBtn.addEventListener("click", () => this.clearAllTasks());
+    this.clearCompletedTasksBtn.addEventListener("click", () => this.clearCompletedTasks());
+    this.checkAllBtn.addEventListener("change", () => this.checkAllTasks());
     this.renderTasks();
   }
 
@@ -42,7 +45,7 @@ export class TaskUI {
     }
   }
 
-  private clearAllTasks(): void{
+  private clearCompletedTasks(): void{
     //Como só usamos estes botões aqui não criei como propriedades da classe (instâncias da classe)
     //const yesBtn = document.getElementById("yesBtn") as HTMLButtonElement;
     //const noBtn = document.getElementById("yesBtn") as HTMLButtonElement;
@@ -55,7 +58,8 @@ export class TaskUI {
 
       //Se o utilizador carregou no "Yes" (automaticada o dialog faz close() depois do submit)
       if(this.confirmClearTasksDialog.returnValue === "Yes"){
-        this.taskManager.clearTaskList();
+        this.taskManager.clearCompletedTasks();
+        this.checkAllBtn.checked = false; //Limpar o botao de check all
         this.renderTasks();
       }else{
         //Carregou no botão "No" portanto não queremos que aconteça nada
@@ -82,9 +86,28 @@ export class TaskUI {
     });
   }
 
-  private renderTasks(){
+  private checkAllTasks(): void{
 
-    this.taskList.innerHTML = "";
+    //Se houver tasks na lista fazemos a mudança (se não houver, nao permitimos checkar a box, porque está vazio)
+    if(this.taskManager.getTaskList().length !== 0){
+      
+      //Verificar se o botao esta checked ou nao, se estiver, chama o metodo para checkar todas, se nao tiver chama o metodo para descheckar todas (passamos argumento true ou false)
+      if(this.checkAllBtn.checked === true){
+        this.taskManager.checkAllTasks(true);
+        this.renderTasks();
+      }
+      if(this.checkAllBtn.checked === false){
+        this.taskManager.checkAllTasks(false);
+        this.renderTasks();
+      }
+    }else{
+      this.checkAllBtn.checked = false;
+    }
+  }
+
+  private renderTasks(): void{
+
+    this.taskList.innerHTML = ""; //Limpar tudo
 
     this.taskManager.getTaskList().forEach((task) => {
 
@@ -138,14 +161,28 @@ export class TaskUI {
       //EventListener para a checkbox e botao de apagar de cada Task
       input.addEventListener("change", () => {
         this.taskManager.changeTaskState(task.id);
+        this.renderTasks(); //Penso que fosse desnecessário porque o próprio html/css já muda o visual do input com o check
       });
 
       button.addEventListener("click", () => {
         this.taskManager.removeTask(task.id);
         this.renderTasks();
       });
-
     })
 
+    //Limpar o checkbox geral (Check All) se todas as tasks forem/estiverem desselecionadas (false)
+    if(this.taskManager.getTaskList().every((task) => (task.complete === false))){
+      this.checkAllBtn.checked = false;
+    }
+
+    //Limpar o checkbox geral (Check All) se a lista de tasks estiver vazia
+    if(this.taskManager.getTaskList().length === 0){
+      this.checkAllBtn.checked = false;
+      
+      //Aproveitar a verificaçao de lista vazia e adicionar um li vazio como se fosse um rodapé (só aparece se não houver tasks)
+      const li = document.createElement("li") as HTMLLIElement;
+      this.taskList.appendChild(li);
+    }
   }
+
 }
