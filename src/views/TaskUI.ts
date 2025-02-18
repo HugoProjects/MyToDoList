@@ -9,6 +9,7 @@ export class TaskUI {
   private confirmClearTasksDialog: HTMLDialogElement;
   private taskList: HTMLUListElement;
   private checkAllBtn: HTMLInputElement;
+  private orderBySelect: HTMLSelectElement;
 
   constructor() {
     this.taskManager = new TaskManager();
@@ -18,15 +19,19 @@ export class TaskUI {
     this.confirmClearTasksDialog = document.getElementById("confirmClearTasksDialog") as HTMLDialogElement;
     this.taskList = document.getElementById("list") as HTMLUListElement;
     this.checkAllBtn = document.getElementById("checkAllBtn") as HTMLInputElement;
+    this.orderBySelect = document.getElementById("orderBySelect") as HTMLSelectElement;
 
     this.initialize(); //Ao chamar o new TaskUI() inicializamos a class TaskUI com todas as suas propriedades e o construtor, que por sua vez irá usar este metodo initialize() para iniciar a aplicação
   }
 
   private initialize(){
 
+    this.orderBySelect.value = this.taskManager.getUserPreferedOrder(); //Inicializar o select de ordenaçao com a opçao memorizada/favorita
+
     this.taskForm.addEventListener("submit", (event) => this.taskSubmit(event));
     this.clearCompletedTasksBtn.addEventListener("click", () => this.clearCompletedTasks());
     this.checkAllBtn.addEventListener("change", () => this.checkAllTasks());
+    this.orderBySelect.addEventListener("change", () => this.renderTasks());
     this.renderTasks();
   }
 
@@ -107,10 +112,10 @@ export class TaskUI {
 
   private renderTasks(): void{
 
-    this.taskList.innerHTML = ""; //Limpar tudo
+    this.taskList.innerHTML = ""; //Limpar tudo (visualmente), para desenhar novamente
+    const taskListOrdenada = this.taskManager.orderTasksBy(this.orderBySelect.value); //Retorna a taskList pela ordem selecionada pelo utilizador (para ser apresentada de seguida)
 
-    this.taskManager.getTaskList().forEach((task) => {
-
+    taskListOrdenada.forEach((task) => {
       const li = document.createElement("li") as HTMLLIElement;
       const label = document.createElement("label") as HTMLLabelElement;
       const input = document.createElement("input") as HTMLInputElement;
@@ -175,14 +180,18 @@ export class TaskUI {
       this.checkAllBtn.checked = false;
     }
 
-    //Limpar o checkbox geral (Check All) se a lista de tasks estiver vazia
+    //Ações a fazer quando a Lista de Tasks estiver vazia []
     if(this.taskManager.getTaskList().length === 0){
-      this.checkAllBtn.checked = false;
+      this.checkAllBtn.checked = false; //Limpar o checkbox geral (Check All)
       
-      //Aproveitar a verificaçao de lista vazia e adicionar um li vazio como se fosse um rodapé (só aparece se não houver tasks)
+      //Adicionar um li vazio como se fosse um rodapé (só aparece se não houver tasks) (visualmente mais bonito)
       const li = document.createElement("li") as HTMLLIElement;
       this.taskList.appendChild(li);
+
+      //Limpar/Resetar o botão Select de Order By ?
+
     }
   }
+
 
 }

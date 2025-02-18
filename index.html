@@ -14,14 +14,14 @@
     <h1 id="title">My To Do List 📋</h1>
     <section id="newTask">
       <form id="taskForm">
-        <input id="taskInput" required type="text" placeholder="Something I need to do...">
+        <input id="taskInput" required type="text" placeholder="Something you need to do...">
         <button id="addTaskButton" type="submit">Add</button>
       </form>
     </section>
 
     <dialog id="confirmClearTasksDialog">
       <form method="dialog" id="dialogForm">
-        <p class="dialogText">Sure you want to delete all completed <i class="fa-solid fa-check"></i> tasks?</p>
+        <p class="dialogText">Sure you want to delete completed <i class="fa-solid fa-check"></i> tasks?</p>
         <div class="dialogBtns">
           <button id="yesBtn" class="dialogBtn" type="submit" value="Yes">Yes</button>
           <button id="noBtn" class="dialogBtn" type="submit" value="No">No</button>
@@ -38,10 +38,10 @@
             <i class="fa-solid fa-sort"></i>
           </label>
           <select id="orderBySelect">
-            <option value="Order by" disabled selected>Order by:</option>
+            <option value="Order-by" disabled selected>Order by:</option>
             <option value="Alphabetical">Alphabetical</option>
             <option value="Newest">Newest</option>
-            <option value="Latest">Latest</option>
+            <option value="Latest">Oldest</option>
           </select>
         </div>
         <button id="clearCompletedTasksBtn" class="clearBtn" title="Clear Completed">Clear <i class="fa-solid fa-check checkIcon"></i></button>

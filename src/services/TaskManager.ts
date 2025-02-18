@@ -21,11 +21,21 @@ export class TaskManager {
 
   private saveTasks(): void {
     localStorage.setItem("taskList", JSON.stringify(this.taskList));
+    console.log(this.taskList);
+  }
+
+  private saveUserPreferedOrder(orderBy: string): void {
+    localStorage.setItem("orderBy", orderBy);
   }
 
   //Métodos publicos podem ser acedidos fora da classe (os privados apenas podem ser acedidos dentro da classe, com o this.)
   public getTaskList(): Task[] {
     return this.taskList;
+  }
+
+  public getUserPreferedOrder(): string {
+    const orderSaved: string = localStorage.getItem("orderBy") || "Order-by"; //Ler a preferencia de ordem de apresentaçao das tasks (se não tiver nenhuma, devolve a default)
+    return orderSaved;
   }
 
   public changeTaskState(id: string): void {
@@ -42,6 +52,7 @@ export class TaskManager {
     const task: Task = {
       id: `${taskInputText.toLowerCase().split(" ").join("-")}-${Date.now()}`,
       task: taskInputText,
+      date: Date.now(), //Este método guarda os millisegundos passados desde 1970 até ao momento. Para mostrar a data num formato legível, usar o const dataFormatada = new Date(task.date).toLocaleString("pt-PT") por exemplo, ou outro semelhante
       complete: false
     };
   
@@ -86,9 +97,28 @@ export class TaskManager {
     this.saveTasks();
   }
 
-  
+  //Devolver o array de Tasks ordenado por uma ordem escolhida pelo utilizador (conserva o array default)
+  public orderTasksBy(orderBy: string): Task[] {
 
+    //Guarda a preferencia de ordenaçao do utilizador para no futuro iniciar com a mesma
+    this.saveUserPreferedOrder(orderBy);
+
+    // Criar uma cópia do array antes de ordenar (o array original fica intacto)
+    const taskListCopy = [...this.getTaskList()]; // ou this.getTaskList().slice()
+
+    switch (orderBy) {
+        case "Alphabetical":
+            return taskListCopy.sort((a, b) => a.task.localeCompare(b.task)); //localeCompare compara a string a com a b (ordena de A-Z) (ou ao contrário se fizer de b com a)
+        case "Newest":
+            return taskListCopy.sort((a, b) => b.date - a.date); //Mais recente ao mais antigo
+        default: //"Oldest" que basicamente é o que vai adicionando ao fim da fila com o push
+            return this.getTaskList(); //Devolvemos a lista original, que seria o mesmo que ordenar por mais antigo ao mais recente com taskListCopy.sort((a, b) => a.date - b.date)
+    }
+  }
 
 
 }
 
+
+
+//Editar tarefa ??

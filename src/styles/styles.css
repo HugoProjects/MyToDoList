@@ -23,7 +23,7 @@ body {
 }
 
 main {
-  min-width: 35%;
+  min-width: 40%;
   max-width: 65%;
   /*width: clamp(35%, 50%, 65%);*/
   margin: 2rem auto;
@@ -58,7 +58,7 @@ main {
   border: 1px grey solid;
   border-radius: 5px;
   font-size: 1rem;
-  min-width: 40%;
+  min-width: 50%;
   field-sizing: content; /*Só funciona em alguns browsers, o elemento estica à medida que se escreve*/
 }
 
@@ -73,11 +73,12 @@ main {
 
 #confirmClearTasksDialog{
   margin: auto;
-  padding: 1rem;
+  padding: 1.5rem 1rem;
   background-color: aliceblue;
   border: 3px solid red;
   border-radius: 10px;
   font-size: 1.5rem;
+  max-width: 75%;
 }
 
 /* Se quisesse customizar os efeitos de fundo do dialog (por default ele escurece o showModal à volta do Dialog)
@@ -177,7 +178,14 @@ main {
 
 #checkAllBtn{
   cursor: pointer;
+  box-shadow: 4px 4px 0px rgba(128, 128, 128, 0.5); /* Sombra à direita e em baixo */
 }
+
+/*
+#checkAllBtn:checked{
+  box-shadow: 4px 4px 0px rgba(0, 120, 212, 0.7); // Sombra à direita e em baixo com a cor default (do windows, outros sistemas pode ser diferente)
+}
+*/
 
 .taskText {
   flex-grow: 1;
@@ -293,6 +301,11 @@ ul>li:last-child {
 
   .taskText {
     font-size: 1.25rem;
+  }
+
+  #confirmClearTasksDialog{
+    font-size: 1.25rem;
+    max-width: 85%;
   }
 
 }
