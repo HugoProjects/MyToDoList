@@ -14,7 +14,7 @@
     <h1 id="title">My To Do List 📋</h1>
     <section id="newTask">
       <form id="taskForm">
-        <input id="taskInput" required type="text" placeholder="Something you need to do...">
+        <input id="taskInput" required type="text" placeholder="Something you have to do...">
         <button id="addTaskButton" type="submit">Add</button>
       </form>
     </section>
@@ -39,9 +39,11 @@
           </label>
           <select id="orderBySelect">
             <option value="Order-by" disabled selected>Order by:</option>
+            <option value="Completed">Completed</option>
+            <option value="Not-Completed">Not Completed</option>
             <option value="Alphabetical">Alphabetical</option>
             <option value="Newest">Newest</option>
-            <option value="Latest">Oldest</option>
+            <option value="Oldest">Oldest</option>
           </select>
         </div>
         <button id="clearCompletedTasksBtn" class="clearBtn" title="Clear Completed">Clear <i class="fa-solid fa-check checkIcon"></i></button>
@@ -52,7 +54,7 @@
     </section>
   </main>
   <footer>
-    <p id="footer">Project made by <a href="https://github.com/HugoProjects" title="Hugo B. Github" target="_blank">Hugo B.</a></p>
+    <p id="footer">Project made by <a href="https://github.com/HugoProjects" title="Hugo B. Github" target="_blank">Hugo B.</a> &copy <span id="copyrightDate"></span></p>
   </footer>
 </body>
 </html>

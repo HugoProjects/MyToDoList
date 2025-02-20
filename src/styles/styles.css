@@ -6,7 +6,7 @@
   box-sizing: border-box;
 }
 
-input, button, select {
+input, button, select, textarea {
   font-family: inherit;
 }
 
@@ -164,18 +164,6 @@ main {
   padding: 0 0.2rem;
 }
 
-.taskLabel {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-}
-
-.taskCheckBtn {
-  width: 1.5rem;
-  height: 1.5rem;
-  flex-shrink: 0;
-}
-
 #checkAllBtn{
   cursor: pointer;
   box-shadow: 4px 4px 0px rgba(128, 128, 128, 0.5); /* Sombra à direita e em baixo */
@@ -187,11 +175,50 @@ main {
 }
 */
 
+.taskLabel {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex-grow: 1;
+}
+
+.taskCheckBtn {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+.taskSaveEditBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.6rem;
+  transform: scale(1.1);
+  animation: pulse 1s infinite alternate ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+.taskEditTextArea{
+  margin: 0 1rem;
+  width: 100%;
+  max-width: 100%;
+  font-size: 1.5rem;
+  resize: none;
+}
+
 .taskText {
   flex-grow: 1;
   display: flex;
   align-items: center;
-  margin-right: auto;
+  /*margin-right: auto;*/
   padding: 0 1rem;
   min-width: 0;
   text-align: left;
@@ -199,6 +226,19 @@ main {
   overflow-wrap: break-word;
   word-break: break-word;
   hyphens: auto;
+}
+
+.taskEditBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-right: 0.7rem;
+}
+
+.taskEditBtn:hover {
+  transform: scale(1.2);
+  color: rgba(0, 0, 0, 0.75);
 }
 
 .taskDeleteBtn {
@@ -301,6 +341,12 @@ ul>li:last-child {
 
   .taskText {
     font-size: 1.25rem;
+    padding: 0 0.5rem 0 0.7rem;
+  }
+
+  .taskCheckBtn {
+    width: 1.3rem;
+    height: 1.3rem;
   }
 
   #confirmClearTasksDialog{

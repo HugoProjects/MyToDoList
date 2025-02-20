@@ -1,7 +1,7 @@
 export default interface Task {
   id: string,
   task: string,
-  date: number,
+  dateOfCreation: number,
   complete: boolean
 }
 

@@ -10,6 +10,7 @@ export class TaskUI {
   private taskList: HTMLUListElement;
   private checkAllBtn: HTMLInputElement;
   private orderBySelect: HTMLSelectElement;
+  private copyrightDateSpan: HTMLSpanElement;
 
   constructor() {
     this.taskManager = new TaskManager();
@@ -20,6 +21,7 @@ export class TaskUI {
     this.taskList = document.getElementById("list") as HTMLUListElement;
     this.checkAllBtn = document.getElementById("checkAllBtn") as HTMLInputElement;
     this.orderBySelect = document.getElementById("orderBySelect") as HTMLSelectElement;
+    this.copyrightDateSpan = document.getElementById("copyrightDate") as HTMLSpanElement;
 
     this.initialize(); //Ao chamar o new TaskUI() inicializamos a class TaskUI com todas as suas propriedades e o construtor, que por sua vez irá usar este metodo initialize() para iniciar a aplicação
   }
@@ -27,6 +29,7 @@ export class TaskUI {
   private initialize(){
 
     this.orderBySelect.value = this.taskManager.getUserPreferedOrder(); //Inicializar o select de ordenaçao com a opçao memorizada/favorita
+    this.copyrightDateSpan.textContent = this.taskManager.getCopyrightDate();
 
     this.taskForm.addEventListener("submit", (event) => this.taskSubmit(event));
     this.clearCompletedTasksBtn.addEventListener("click", () => this.clearCompletedTasks());
@@ -120,7 +123,8 @@ export class TaskUI {
       const label = document.createElement("label") as HTMLLabelElement;
       const input = document.createElement("input") as HTMLInputElement;
       const span = document.createElement("span") as HTMLSpanElement;
-      const button = document.createElement("button") as HTMLButtonElement;
+      const buttonEdit = document.createElement("button") as HTMLButtonElement;
+      const buttonDelete = document.createElement("button") as HTMLButtonElement;
 
       //Uma forma de fazer é esta (direta e funcional)
       label.className = "taskLabel"; //define unicamente esta classe
@@ -129,20 +133,24 @@ export class TaskUI {
       input.checked = task.complete;
       span.classList.add("taskText");
       span.textContent = task.task;
-      button.classList.add("taskDeleteBtn");
-      button.title = "Delete Task";
-      button.ariaLabel = "Delete Task";
-      button.innerHTML = "&#x2716;";
+      buttonDelete.classList.add("taskDeleteBtn");
+      buttonDelete.title = "Delete Task";
+      buttonDelete.ariaLabel = "Delete Task";
+      buttonDelete.innerHTML = "&#x2716;";
+      buttonEdit.classList.add("taskEditBtn");
+      buttonEdit.title = "Edit Task";
+      buttonEdit.ariaLabel = "Edit Task";
+      buttonEdit.innerHTML = "<i class=\"fa-solid fa-pen\"></i>";
 
       /*Outra forma mais especifica é esta (setAttribute dá para todas as propriedades, mas normalmente usa-se para elementos nao gerais do dom, ex: data-*qualquerCoisa)
       label.classList.add("taskLabel");
       input.setAttribute("type", "checkbox");
       input.classList.add("taskCheckBtn");
       span.classList.add("taskText");
-      button.classList.add("taskDeleteBtn");
-      button.setAttribute("title", "Delete Task");
-      button.setAttribute("aria-label", "Delete Task");
-      button.textContent = "&#x2716;";*/
+      buttonDelete.classList.add("taskDeleteBtn");
+      buttonDelete.setAttribute("title", "Delete Task");
+      buttonDelete.setAttribute("aria-label", "Delete Task");
+      buttonDelete.textContent = "&#x2716;";*/
 
       /*Outra forma seria assim:
       //
@@ -150,6 +158,7 @@ export class TaskUI {
             <input type="checkbox" class="taskCheckBtn" ${task.complete ? "checked" : "">
             <span class="taskText">${task.task}</span>
           </label>
+          <button class="taskEditBtn" title="Edit Task" aria-label="Edit Task"><i class="fa-solid fa-pen"></i></button>
           <button class="taskDeleteBtn" title="Delete Task" aria-label="Delete Task">&#x2716;</button>
 
       //e fazer innerHTML à li (para HTML mais complexo, com muitos elementos, esta pode ser mais fácil para organizar)*/
@@ -159,7 +168,8 @@ export class TaskUI {
       label.appendChild(span);
 
       li.appendChild(label);
-      li.appendChild(button);
+      li.appendChild(buttonEdit);
+      li.appendChild(buttonDelete);
 
       this.taskList.appendChild(li);
 
@@ -169,7 +179,62 @@ export class TaskUI {
         this.renderTasks(); //Penso que fosse desnecessário porque o próprio html/css já muda o visual do input com o check
       });
 
-      button.addEventListener("click", () => {
+      //Clicar no botão Edit da Task
+      buttonEdit.addEventListener("click", () => {
+
+        const textAreaEdit = document.createElement("textarea") as HTMLTextAreaElement;
+        const saveEditBtn = document.createElement("button") as HTMLButtonElement;
+
+        textAreaEdit.classList.add("taskEditTextArea");
+        textAreaEdit.value = task.task;
+
+
+        
+
+        saveEditBtn.classList.add("taskSaveEditBtn");
+        saveEditBtn.title = "Save";
+        saveEditBtn.ariaLabel = "Save";
+        saveEditBtn.innerHTML = "<i class=\"fa-solid fa-floppy-disk\"></i>";
+
+        label.replaceChild(saveEditBtn, input); //Troca o checkbox pelo botao de save
+        label.replaceChild(textAreaEdit, span); //Troca a span pelo input text
+
+        //editar o estilo da textarea no CSS
+        textAreaEdit.style.height = "auto"; // Faz com que a altura seja recalculada
+        textAreaEdit.style.height = `${textAreaEdit.scrollHeight}px`; // Ajusta a altura para o conteúdo
+
+        textAreaEdit.focus(); //Dar focus à textArea para a ediçao da task
+
+        //Atençao a este eventlistener dentro de outro, fazer uma verificaçao para impedir multiplicaçao de eventlisteners
+        //saveEditBtn.addEventListener();
+        
+        // Adiciona o evento 'input' para ajustar a altura da textArea conforme o usuário digita
+        textAreaEdit.addEventListener('input', () => {
+          textAreaEdit.style.height = 'auto'; // Restaura a altura para auto antes de ajustar novamente
+          textAreaEdit.style.height = `${textAreaEdit.scrollHeight}px`; // Ajusta a altura com base no conteúdo
+        });
+
+        //Se fizer algo que tire o focus da textArea, desfaz tudo e volta ao normal (sem gravar as ediçoes)
+        textAreaEdit.addEventListener("blur", () => {
+          label.replaceChild(input, saveEditBtn); //Troca o checkbox pelo botao de save
+          label.replaceChild(span, textAreaEdit); //Troca a span pelo input text
+        });
+
+        /*
+        span.contentEditable = "true";
+        span.focus();
+    
+        // Se clicar fora, também desativa a edição
+        span.addEventListener("blur", () => {
+          span.contentEditable = "false";
+        });
+        */
+
+
+      });
+
+      //Clicar no X para remover uma Task
+      buttonDelete.addEventListener("click", () => {
         this.taskManager.removeTask(task.id);
         this.renderTasks();
       });
@@ -195,3 +260,51 @@ export class TaskUI {
 
 
 }
+
+
+
+
+
+
+/* EDITAR TASK
+
+document.addEventListener("DOMContentLoaded", () => {
+    const list = document.getElementById("list");
+
+    list.addEventListener("click", (event) => {
+        if (event.target.classList.contains("taskEditBtn")) {
+            const taskItem = event.target.closest("li"); // Pega o item da tarefa
+            const taskSpan = taskItem.querySelector(".taskText");
+
+            // Criar input para edição
+            const input = document.createElement("input");
+            input.type = "text";
+            input.classList.add("taskEditInput");
+            input.value = taskSpan.textContent;
+            taskItem.replaceChild(input, taskSpan);
+            input.focus();
+
+            // Guardar alteração ao pressionar "Enter" ou perder o foco
+            input.addEventListener("blur", saveEdit);
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") saveEdit();
+                if (e.key === "Escape") cancelEdit();
+            });
+
+            function saveEdit() {
+                taskSpan.textContent = input.value.trim() || taskSpan.textContent; // Evita valores vazios
+                taskItem.replaceChild(taskSpan, input);
+                updateLocalStorage();
+            }
+
+            function cancelEdit() {
+                taskItem.replaceChild(taskSpan, input);
+            }
+        }
+    });
+
+    function updateLocalStorage() {
+        // Atualiza a lista no localStorage com as novas tarefas editadas
+    }
+});
+*/

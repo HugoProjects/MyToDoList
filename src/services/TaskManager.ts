@@ -38,6 +38,11 @@ export class TaskManager {
     return orderSaved;
   }
 
+  public getCopyrightDate(): string {
+    const year = new Date().getFullYear();
+    return year.toString(); //Devolver como string em vez de number (que vem como default de Date)
+  }
+
   public changeTaskState(id: string): void {
     const taskToChange = this.taskList.find(task => task.id === id);
 
@@ -52,7 +57,7 @@ export class TaskManager {
     const task: Task = {
       id: `${taskInputText.toLowerCase().split(" ").join("-")}-${Date.now()}`,
       task: taskInputText,
-      date: Date.now(), //Este método guarda os millisegundos passados desde 1970 até ao momento. Para mostrar a data num formato legível, usar o const dataFormatada = new Date(task.date).toLocaleString("pt-PT") por exemplo, ou outro semelhante
+      dateOfCreation: Date.now(), //Este método guarda os millisegundos passados desde 1970 até ao momento. Para mostrar a data num formato legível, usar o const dataFormatada = new Date(task.dateOfCreation).toLocaleString("pt-PT") por exemplo, ou outro semelhante
       complete: false
     };
   
@@ -105,20 +110,36 @@ export class TaskManager {
 
     // Criar uma cópia do array antes de ordenar (o array original fica intacto)
     const taskListCopy = [...this.getTaskList()]; // ou this.getTaskList().slice()
+    //console.log("copia do taskList:",taskListCopy);
 
     switch (orderBy) {
         case "Alphabetical":
             return taskListCopy.sort((a, b) => a.task.localeCompare(b.task)); //localeCompare compara a string a com a b (ordena de A-Z) (ou ao contrário se fizer de b com a)
         case "Newest":
-            return taskListCopy.sort((a, b) => b.date - a.date); //Mais recente ao mais antigo
+            return taskListCopy.sort((a, b) => b.dateOfCreation - a.dateOfCreation); //Mais recente ao mais antigo
+        case "Completed":
+            return taskListCopy.sort((a, b) => {
+              if (a.complete === b.complete) return 0;  // Caso ambas sejam iguais mantem a ordem
+              return a.complete ? -1 : 1;  // Tarefa completa vem primeiro
+            });
+        case "Not-Completed":
+          return taskListCopy.sort((a, b) => {
+            if (a.complete === b.complete) return 0;  // Caso ambas sejam iguais mantem a ordem
+            return a.complete ? 1 : -1;  // Tarefa nao completa vem primeiro
+          });
         default: //"Oldest" que basicamente é o que vai adicionando ao fim da fila com o push
-            return this.getTaskList(); //Devolvemos a lista original, que seria o mesmo que ordenar por mais antigo ao mais recente com taskListCopy.sort((a, b) => a.date - b.date)
+            return this.getTaskList(); //Devolvemos a lista original, que seria o mesmo que ordenar por mais antigo ao mais recente com taskListCopy.sort((a, b) => a.dateOfCreation - b.dateOfCreation)
     }
   }
+
+  
 
 
 }
 
 
 
-//Editar tarefa ??
+// Editar tarefa ??
+// Dark Mode (media query & button to change)
+
+//Ordenar por completas (nao concluidas primeiro?)
