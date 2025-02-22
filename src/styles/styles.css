@@ -206,12 +206,16 @@ main {
   }
 }
 
-.taskEditTextArea{
+.taskEditDiv{
   margin: 0 1rem;
   width: 100%;
   max-width: 100%;
   font-size: 1.5rem;
-  resize: none;
+  text-align: left;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  cursor: text;
 }
 
 .taskText {

@@ -71,6 +71,18 @@ export class TaskManager {
     this.saveTasks();
   }
 
+  public editTask(taskID: string, taskText: string) {
+
+    //Se o utilizador tiver feito alterações, grava as mesmas na task, se tiver apagado todo o texto (null ou apenas espaços em branco) remove-se a task
+    if(taskText){
+      const taskToEdit: Task = this.taskList.find((task) => task.id === taskID)!; //O ! é para o TypeScript não dar erro, estamos a dizer que temos a certeza que o find vai retornar um objeto (nunca sera undefined)
+      taskToEdit.task = taskText;
+      this.saveTasks();
+    } else {
+      this.removeTask(taskID);
+    }
+  }
+
   public clearTaskList(): void {
     this.taskList = [];
     this.saveTasks();
@@ -118,10 +130,12 @@ export class TaskManager {
         case "Newest":
             return taskListCopy.sort((a, b) => b.dateOfCreation - a.dateOfCreation); //Mais recente ao mais antigo
         case "Completed":
-            return taskListCopy.sort((a, b) => {
-              if (a.complete === b.complete) return 0;  // Caso ambas sejam iguais mantem a ordem
-              return a.complete ? -1 : 1;  // Tarefa completa vem primeiro
-            });
+          /*Só ordena se houver alguma task completa, senão nao ordena nada (neste caso nao funciona porque devolve sempre a lista original (oldest) porque estamos a trabalhar com uma copia do array, nunca alteramos o original)
+          if(taskListCopy.some((task) => task.complete === true)){*/
+          return taskListCopy.sort((a, b) => {
+            if (a.complete === b.complete) return 0;  // Caso ambas sejam iguais mantem a ordem
+            return a.complete ? -1 : 1;  // Tarefa completa vem primeiro
+          });
         case "Not-Completed":
           return taskListCopy.sort((a, b) => {
             if (a.complete === b.complete) return 0;  // Caso ambas sejam iguais mantem a ordem
@@ -132,14 +146,7 @@ export class TaskManager {
     }
   }
 
-  
-
-
 }
 
 
-
-// Editar tarefa ??
 // Dark Mode (media query & button to change)
-
-//Ordenar por completas (nao concluidas primeiro?)

@@ -133,6 +133,7 @@ export class TaskUI {
       input.checked = task.complete;
       span.classList.add("taskText");
       span.textContent = task.task;
+      span.style.display = "inline-block";
       buttonDelete.classList.add("taskDeleteBtn");
       buttonDelete.title = "Delete Task";
       buttonDelete.ariaLabel = "Delete Task";
@@ -182,55 +183,87 @@ export class TaskUI {
       //Clicar no botão Edit da Task
       buttonEdit.addEventListener("click", () => {
 
-        const textAreaEdit = document.createElement("textarea") as HTMLTextAreaElement;
+        //Para desativar o comportamento da label (está ligada à checkbox e ao input antigos se carregar nela)
+        label.addEventListener('click', handleEvent);
+
+        function handleEvent(event: Event) {
+          event.preventDefault();
+        }
+
         const saveEditBtn = document.createElement("button") as HTMLButtonElement;
-
-        textAreaEdit.classList.add("taskEditTextArea");
-        textAreaEdit.value = task.task;
-
-
-        
+        const divEdit = document.createElement("div") as HTMLParagraphElement;
 
         saveEditBtn.classList.add("taskSaveEditBtn");
         saveEditBtn.title = "Save";
         saveEditBtn.ariaLabel = "Save";
         saveEditBtn.innerHTML = "<i class=\"fa-solid fa-floppy-disk\"></i>";
 
+        divEdit.textContent = task.task;
+        divEdit.classList.add("taskEditDiv");
+        divEdit.contentEditable = "true";
+
         label.replaceChild(saveEditBtn, input); //Troca o checkbox pelo botao de save
-        label.replaceChild(textAreaEdit, span); //Troca a span pelo input text
+        label.replaceChild(divEdit, span); //Troca o span pela div de ediçao
 
-        //editar o estilo da textarea no CSS
-        textAreaEdit.style.height = "auto"; // Faz com que a altura seja recalculada
-        textAreaEdit.style.height = `${textAreaEdit.scrollHeight}px`; // Ajusta a altura para o conteúdo
+        // Pequeno atraso para garantir que o focus funcione corretamente (a o cursor vá para o fim do texto depois do focus)
+        setTimeout(() => {
+          divEdit.focus();
+          // Move o cursor para o final do conteúdo
+          const range = document.createRange();
+          const selection = window.getSelection();
+          range.selectNodeContents(divEdit);
+          range.collapse(false);
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+        }, 0);
 
-        textAreaEdit.focus(); //Dar focus à textArea para a ediçao da task
-
-        //Atençao a este eventlistener dentro de outro, fazer uma verificaçao para impedir multiplicaçao de eventlisteners
-        //saveEditBtn.addEventListener();
-        
-        // Adiciona o evento 'input' para ajustar a altura da textArea conforme o usuário digita
-        textAreaEdit.addEventListener('input', () => {
-          textAreaEdit.style.height = 'auto'; // Restaura a altura para auto antes de ajustar novamente
-          textAreaEdit.style.height = `${textAreaEdit.scrollHeight}px`; // Ajusta a altura com base no conteúdo
-        });
-
-        //Se fizer algo que tire o focus da textArea, desfaz tudo e volta ao normal (sem gravar as ediçoes)
-        textAreaEdit.addEventListener("blur", () => {
-          label.replaceChild(input, saveEditBtn); //Troca o checkbox pelo botao de save
-          label.replaceChild(span, textAreaEdit); //Troca a span pelo input text
-        });
-
-        /*
-        span.contentEditable = "true";
-        span.focus();
-    
-        // Se clicar fora, também desativa a edição
-        span.addEventListener("blur", () => {
-          span.contentEditable = "false";
-        });
+        /*Precauçao: Antes de adicionar o novo listener, remova o antigo para evitar multiplicaçao de eventlisteners
+        divEdit.removeEventListener("blur", funcao);
+        saveEditBtn.removeEventListener("click", funcao);
+        divEdit.removeEventListener("keydown", funcao);
         */
 
+        // Se clicar fora desativa a edição (blur é perder o focus)
+        divEdit.addEventListener("blur", (event) => {
 
+          //Se a div perdeu o foco porque se carregou no botao de save
+          if (event.relatedTarget === saveEditBtn) {
+            divEdit.contentEditable = "false";
+            this.taskManager.editTask(task.id, divEdit.innerText.trim());
+            label.replaceChild(input, saveEditBtn); //Troca o checkbox pelo botao de save
+            label.replaceChild(span, divEdit); //Troca a span pelo input text
+            label.removeEventListener('click', handleEvent);
+            this.renderTasks();
+          }else{ //se foi por carregar noutro sitio qualquer, sai fora sem gravar nada
+            divEdit.contentEditable = "false";
+            label.replaceChild(input, saveEditBtn); //Troca o checkbox pelo botao de save
+            label.replaceChild(span, divEdit); //Troca a span pelo input text
+            label.removeEventListener('click', handleEvent);
+          }
+        });
+
+        /*Se carregar no botao de save, guardar a alteração (não é necessário porque está a ser feito)
+        saveEditBtn.addEventListener("click", () => {
+          divEdit.contentEditable = "false";
+          this.taskManager.editTask(task.id, divEdit.innerText.trim());
+          label.replaceChild(input, saveEditBtn); //Troca o checkbox pelo botao de save
+          label.replaceChild(span, divEdit); //Troca a span pelo input text
+          label.removeEventListener('click', handleEvent);
+          this.renderTasks();
+        });*/
+
+        //Se carregar no enter, guardar a alteração
+        divEdit.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+              event.preventDefault(); // Evita que o Enter crie uma nova linha
+              divEdit.contentEditable = "false";
+              this.taskManager.editTask(task.id, divEdit.innerText.trim());
+              label.replaceChild(input, saveEditBtn); //Troca o checkbox pelo botao de save
+              label.replaceChild(span, divEdit); //Troca a span pelo input text
+              label.removeEventListener('click', handleEvent);
+              this.renderTasks();
+          }
+        });
       });
 
       //Clicar no X para remover uma Task
@@ -260,51 +293,3 @@ export class TaskUI {
 
 
 }
-
-
-
-
-
-
-/* EDITAR TASK
-
-document.addEventListener("DOMContentLoaded", () => {
-    const list = document.getElementById("list");
-
-    list.addEventListener("click", (event) => {
-        if (event.target.classList.contains("taskEditBtn")) {
-            const taskItem = event.target.closest("li"); // Pega o item da tarefa
-            const taskSpan = taskItem.querySelector(".taskText");
-
-            // Criar input para edição
-            const input = document.createElement("input");
-            input.type = "text";
-            input.classList.add("taskEditInput");
-            input.value = taskSpan.textContent;
-            taskItem.replaceChild(input, taskSpan);
-            input.focus();
-
-            // Guardar alteração ao pressionar "Enter" ou perder o foco
-            input.addEventListener("blur", saveEdit);
-            input.addEventListener("keydown", (e) => {
-                if (e.key === "Enter") saveEdit();
-                if (e.key === "Escape") cancelEdit();
-            });
-
-            function saveEdit() {
-                taskSpan.textContent = input.value.trim() || taskSpan.textContent; // Evita valores vazios
-                taskItem.replaceChild(taskSpan, input);
-                updateLocalStorage();
-            }
-
-            function cancelEdit() {
-                taskItem.replaceChild(taskSpan, input);
-            }
-        }
-    });
-
-    function updateLocalStorage() {
-        // Atualiza a lista no localStorage com as novas tarefas editadas
-    }
-});
-*/
