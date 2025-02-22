@@ -174,10 +174,16 @@ export class TaskUI {
 
       this.taskList.appendChild(li);
 
-      //EventListener para a checkbox e botao de apagar de cada Task
+      //EventListener para a checkbox da task
       input.addEventListener("change", () => {
         this.taskManager.changeTaskState(task.id);
         this.renderTasks(); //Penso que fosse desnecessário porque o próprio html/css já muda o visual do input com o check
+      });
+
+      //Clicar no X para remover uma Task
+      buttonDelete.addEventListener("click", () => {
+        this.taskManager.removeTask(task.id);
+        this.renderTasks();
       });
 
       //Clicar no botão Edit da Task
@@ -265,16 +271,12 @@ export class TaskUI {
           }
         });
       });
+    });
 
-      //Clicar no X para remover uma Task
-      buttonDelete.addEventListener("click", () => {
-        this.taskManager.removeTask(task.id);
-        this.renderTasks();
-      });
-    })
-
-    //Limpar o checkbox geral (Check All) se todas as tasks forem/estiverem desselecionadas (false)
-    if(this.taskManager.getTaskList().every((task) => (task.complete === false))){
+    //Checkar automaticamente o checkbox geral (Check All) se todas as tasks estiverem completas / Limpar o checkbox geral se alguma task estiver a false
+    if(this.taskManager.getTaskList().every((task) => (task.complete === true))){
+      this.checkAllBtn.checked = true;
+    }else{
       this.checkAllBtn.checked = false;
     }
 
