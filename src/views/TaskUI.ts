@@ -264,14 +264,14 @@ export class TaskUI {
               event.preventDefault(); // Evita que o Enter crie uma nova linha
 
               //Timeout para garantir que faz todas as operaçoes
-              setTimeout(() => {
-                divEdit.contentEditable = "false";
+              //setTimeout(() => {
+                //divEdit.contentEditable = "false";
                 this.taskManager.editTask(task.id, divEdit.innerText.trim());
                 label.replaceChild(input, saveEditBtn); //Troca o checkbox pelo botao de save
                 label.replaceChild(span, divEdit); //Troca a span pelo input text
                 label.removeEventListener('click', handleEvent);
                 this.renderTasks();
-              }, 0);
+              //}, 0);
           }
         });
       });
