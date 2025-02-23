@@ -137,7 +137,7 @@ export class TaskUI {
       buttonDelete.classList.add("taskDeleteBtn");
       buttonDelete.title = "Delete Task";
       buttonDelete.ariaLabel = "Delete Task";
-      buttonDelete.innerHTML = "&#x2716;";
+      buttonDelete.innerHTML = "<i class=\"fa-solid fa-xmark\"></i>";
       buttonEdit.classList.add("taskEditBtn");
       buttonEdit.title = "Edit Task";
       buttonEdit.ariaLabel = "Edit Task";
@@ -248,7 +248,7 @@ export class TaskUI {
           }
         });
 
-        /*Se carregar no botao de save, guardar a alteração (não é necessário porque está a ser feito)
+        /*Se carregar no botao de save, guardar a alteração (não é necessário porque está a ser feito em cima)
         saveEditBtn.addEventListener("click", () => {
           divEdit.contentEditable = "false";
           this.taskManager.editTask(task.id, divEdit.innerText.trim());
@@ -262,12 +262,16 @@ export class TaskUI {
         divEdit.addEventListener("keydown", (event) => {
           if (event.key === "Enter") {
               event.preventDefault(); // Evita que o Enter crie uma nova linha
-              divEdit.contentEditable = "false";
-              this.taskManager.editTask(task.id, divEdit.innerText.trim());
-              label.replaceChild(input, saveEditBtn); //Troca o checkbox pelo botao de save
-              label.replaceChild(span, divEdit); //Troca a span pelo input text
-              label.removeEventListener('click', handleEvent);
-              this.renderTasks();
+
+              //Timeout para garantir que faz todas as operaçoes
+              setTimeout(() => {
+                divEdit.contentEditable = "false";
+                this.taskManager.editTask(task.id, divEdit.innerText.trim());
+                label.replaceChild(input, saveEditBtn); //Troca o checkbox pelo botao de save
+                label.replaceChild(span, divEdit); //Troca a span pelo input text
+                label.removeEventListener('click', handleEvent);
+                this.renderTasks();
+              }, 0);
           }
         });
       });
